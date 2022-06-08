@@ -1,0 +1,32 @@
+data_transforms:
+  input_size: 32
+
+trainer:
+  n_step_f: 4 # MCD N_STEP_F
+  batch_size: 128
+#  max_epochs: 200
+  num_workers: 4
+  save_model_addr: 'checkpoints/mnist2syn'
+  forget_rate: 0.5
+
+optimizer:
+  name: 'SGD'
+  params:
+    lr: 0.001
+    momentum: 0.9
+    weight_decay: 0.0005
+
+data:
+  type: 'digits'
+  class_number: 10
+  root: 'data/digits_dg'
+  source_domain_x: 'mnist'
+  source_domain_u_1: 'mnist_m'
+  source_domain_u_2: 'svhn'
+  target_domain: 'syn'
+
+log:
+  save_addr: 'log'
+  save_name: 'mnist2syn'
+
+ratio: 0.4 # a ratio to split samples into clean set and noisy set

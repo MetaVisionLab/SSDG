@@ -1,0 +1,7 @@
+numpy==1.19.2
+Pillow==9.1.1
+PyYAML==6.0
+scikit_learn==1.1.1
+six==1.15.0
+torch==1.7.1
+torchvision==0.8.2
