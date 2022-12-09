@@ -50,7 +50,7 @@ digits_dg/
 
 **Office-Home-DG**
 
-Since we provide the dataset splits in this repo,you just need to download the dataset [Office-Home-DG](https://drive.google.com/file/d/1gkbf_KaxoBws-GWT3XIPZ7BnkqbAxIFa/view) to data/digits_dg/images and unzip it
+Since we provide the dataset splits in this repo,you just need to download the dataset [Office-Home-DG](https://drive.google.com/file/d/1gkbf_KaxoBws-GWT3XIPZ7BnkqbAxIFa/view) to data/office_home_dg/images and unzip it
 
 File structure:
 
