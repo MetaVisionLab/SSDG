@@ -1,4 +1,4 @@
-# Semi-Supervised Domain Generalization in Real World: New Benchmark and Strong Baseline
+# Semi-Supervised Domain Generalization with Evolving Intermediate Domain
 
 [paper](https://arxiv.org/pdf/2111.10221.pdf)
 
@@ -83,8 +83,8 @@ Please cite our paper:
 
 ```
 @article{lin2021ssdg,
-  title={Semi-Supervised Domain Generalization in Real World: New Benchmark and Strong Baseline},
-  author={Lin, Luojun and Xie, Han and Yang, Zhifeng and Sun, Zhishu and Liu, Wenxi and Yu, Yuanlong and Chen, Weijie and Yang, Shicai and Xie, Di},
+  title={Semi-Supervised Domain Generalization with Evolving Intermediate Domain},
+  author={Lin, Luojun and Xie, Han and Sun, Zhishu and Chen, Weijie and Liu, Wenxi and Yu, Yuanlong and Zhang, Lei},
   journal={arXiv preprint arXiv:2111.10221},
   year={2021}
 }
