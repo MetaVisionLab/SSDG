@@ -1,6 +1,6 @@
 # Semi-Supervised Domain Generalization with Evolving Intermediate Domain
 
-[paper](https://arxiv.org/pdf/2111.10221.pdf)
+[paper](https://www.sciencedirect.com/science/article/pii/S0031320324000311)
 
 ## Requirements
 
@@ -11,6 +11,8 @@
 - six==1.15.0
 - torch==1.7.1
 - torchvision==0.8.2
+- Ubuntu==18.04
+- Python==3.8
 
 ## Installation
 
@@ -82,11 +84,14 @@ python parse_test_res_single.py log/UDAG_A2C.log --test-log
 Please cite our paper:
 
 ```
-@article{lin2021ssdg,
-  title={Semi-Supervised Domain Generalization with Evolving Intermediate Domain},
+@article{lin2024semi,
+  title={Semi-supervised domain generalization with evolving intermediate domain},
   author={Lin, Luojun and Xie, Han and Sun, Zhishu and Chen, Weijie and Liu, Wenxi and Yu, Yuanlong and Zhang, Lei},
-  journal={arXiv preprint arXiv:2111.10221},
-  year={2021}
+  journal={Pattern Recognition},
+  volume={149},
+  pages={110280},
+  year={2024},
+  publisher={Elsevier}
 }
 ```
 # Contact us
