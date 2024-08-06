@@ -5,16 +5,19 @@
 ## Requirements
 
 - numpy==1.19.2
-- Pillow==9.1.1
-- PyYAML==6.0
+- Pillow==8.1.0
+- PyYAML==5.3.1
+- scipy==1.9.3
 - scikit_learn==1.1.1
 - six==1.15.0
 - torch==1.7.1
 - torchvision==0.8.2
 - Ubuntu==18.04
-- Python==3.8
+- Python==3.8.5
 
 ## Installation
+
+Local install
 
 ```
 git clone https://github.com/MetaVisionLab/SSDG.git
@@ -22,44 +25,25 @@ cd SSDG
 pip install -r requirements.txt
 ```
 
+Or using docker image ```pytorch/pytorch:1.7.1-cuda11.0-cudnn8-devel```.
+
 ## Data Preparation
 
-You can download the dataset to the folder  SSDG/data,which include three folders representing three datasets in our paper
-
-**PACS**
-
-Download the dataset [PACS](https://drive.google.com/file/d/1m4X4fROCCXMO0lRLrr6Zz9Vb3974NWhE/view) to data/pacs and unzip it(this dataset link directly provides images and splits)
+You can download the dataset [PACS](https://csip.fzu.edu.cn/files/datasets/SSDG/pacs.zip), [Digits-DG](https://csip.fzu.edu.cn/files/datasets/SSDG/digits_dg.zip) and [Office-Home-DG](https://csip.fzu.edu.cn/files/datasets/SSDG/office_home_dg.zip) to the folder SSDG/data and unzip it, which include three folders representing three datasets in our paper.
 
 File structure:
 
 ```
-pacs/
-|–– images/
-|–– splits/
-```
-
-**Digits-DG**
-
-Since we provide the dataset splits in this repo,you just need to download the dataset [Digits-DG](https://drive.google.com/file/d/15V7EsHfCcfbKgsDmzQKj_DfXt_XYp_P7/view) to data/digits_dg/images and unzip it
-
-File structure:
-
-```
-digits_dg/
-|–– images/
-|–– splits/
-```
-
-**Office-Home-DG**
-
-Since we provide the dataset splits in this repo,you just need to download the dataset [Office-Home-DG](https://drive.google.com/file/d/1gkbf_KaxoBws-GWT3XIPZ7BnkqbAxIFa/view) to data/office_home_dg/images and unzip it
-
-File structure:
-
-```
-office_home_dg/
-|–– images/
-|–– splits/
+SSDG/data
+|--digits_dg/
+  |–– images/
+  |–– splits/
+|--office_home_dg/
+  |–– images/
+  |–– splits/
+|--pacs/
+  |–– images/
+  |–– splits/
 ```
 
 ## Training
