@@ -5,22 +5,27 @@
 ## Requirements
 
 - numpy==1.19.2
-- Pillow==9.1.1
-- PyYAML==6.0
+- Pillow==8.1.0
+- PyYAML==5.3.1
+- scipy==1.9.3
 - scikit_learn==1.1.1
 - six==1.15.0
 - torch==1.7.1
 - torchvision==0.8.2
 - Ubuntu==18.04
-- Python==3.8
+- Python==3.8.5
 
 ## Installation
+
+Local install
 
 ```
 git clone https://github.com/MetaVisionLab/SSDG.git
 cd SSDG
 pip install -r requirements.txt
 ```
+
+Or using docker image ```pytorch/pytorch:1.7.1-cuda11.0-cudnn8-devel```.
 
 ## Data Preparation
 
