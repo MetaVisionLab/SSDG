@@ -20,6 +20,7 @@ data:
   type: 'officeHome'
   class_number: 65
   root: 'data/office_home_dg'
+  webroot: 'data/web_office'
   source_domain_x: 'clipart'
   source_domain_u_1: 'art'
   source_domain_u_2: 'real_world'

@@ -20,6 +20,7 @@ data:
   type: 'pacs'
   class_number: 7
   root: 'data/pacs'
+  webroot: 'data/web_pacs'
   source_domain_x: 'sketch'
   source_domain_u_1: 'cartoon'
   source_domain_u_2: 'photo'

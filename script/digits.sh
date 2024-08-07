@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 python main.py --task mnist2mnist_m
 
 python main.py --task mnist2syn

@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 python main.py --task P2A
 
 python main.py --task P2C

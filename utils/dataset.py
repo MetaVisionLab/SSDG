@@ -2,37 +2,10 @@ import os
 import os.path as osp
 import torch
 import torch.utils.data as data
-from PIL import Image
+from PIL import Image, ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-
-def listdir(path, suffix):
-    list_path = []
-    for root, _, files in os.walk(path, followlinks=True):
-        for f in files:
-            if f.endswith(suffix):
-                list_path.append(osp.join(root, f))
-    return list_path
-
-
-def get_image_dirs(root):
-    suffix_list = ['png', 'jpg']
-    dir_list = []
-    for dir_item in os.listdir(root):
-        if osp.isdir(osp.join(root, dir_item)):
-            dir_list.append(dir_item)
-    dir_list.sort()
-    imagedirs = []
-    labels = []
-    for label_id, dir_item in enumerate(dir_list):
-        sub_folder = osp.join(root, dir_item)
-        for suffix in suffix_list:
-            imagedirs_item = listdir(sub_folder, suffix=suffix)
-            imagedirs += imagedirs_item
-            labels += [label_id for _ in range(len(imagedirs_item))]
-    return imagedirs, labels
-
-
-def get_pacs_image_dirs(root, dname, split):
+def get_image_dirs(root, dname, split):
     root = osp.abspath(root)
     image_dir = osp.join(root, 'images')
     split_dir = osp.join(root, 'splits')
@@ -90,3 +63,14 @@ class base_dataset(data.Dataset):
             'impath': impath
         }
         return output
+
+def get_web_image_dirs(root):
+    path = os.path.join(root, 'all_list.txt')
+    file = open(path, 'r',encoding="gbk")
+    items = []
+    for line in file.readlines():
+        impath = line.split()[0]
+        impath = osp.join(root, impath)
+        label = int(line.split()[1])
+        items.append((impath, label))
+    return items

@@ -221,8 +221,8 @@ class CoTeachingTrainer:
                 domain_pse.append(i)
 
 
-        domain_true = torch.tensor(domain_true)
-        domain_pse = torch.tensor(domain_pse)
+        domain_true = torch.tensor(domain_true).type(torch.long)
+        domain_pse = torch.tensor(domain_pse).type(torch.long)
         output1_true = output1[domain_true]
         output2_true = output2[domain_true]
         label_true = label[domain_true]
@@ -259,8 +259,12 @@ class CoTeachingTrainer:
         pred2_pse_hat = pred2_pse.mean(dim=0).unsqueeze(0)
         loss_2_im = -self.ELogLoss(pred2_pse).mean(0) + self.ELogLoss(pred2_pse_hat).sum()
 
-        loss_1_final = loss_1_true + loss_1_update + loss_1_im
-        loss_2_final = loss_2_true + loss_2_update + loss_2_im
+        if domain_true.shape != torch.Size([0]):
+            loss_1_final = loss_1_true + loss_1_update + loss_1_im
+            loss_2_final = loss_2_true + loss_2_update + loss_2_im
+        else:
+            loss_1_final = loss_1_update + loss_1_im
+            loss_2_final = loss_2_update + loss_2_im
         self.model_backward_and_update(loss_1_final, ['F1','C1'])
         self.model_backward_and_update(loss_2_final, ['F2','C2'])
 
