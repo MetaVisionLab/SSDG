@@ -20,7 +20,6 @@ def set_random_seed(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
-
 def build_mcd_optimizer(model, config):
     if config['optimizer']['name'] == 'SGD':
         opt_F = torch.optim.SGD(list(model["F"].parameters()),
@@ -72,12 +71,16 @@ def build_dataloader(data_list, batch_size, config, transform=None, istrain=True
 def main():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--task', default='visda', help='task name')
+    parser.add_argument('--task', default='art2clipart', help='task name')
     args = parser.parse_args()
 
     set_random_seed(1)
 
     config = yaml.load(open("./config/" + args.task + ".yaml", "r"), Loader=yaml.FullLoader)
+
+    config['trainer']['save_model_addr'] = f"{config['trainer']['save_model_addr']}_refined"
+    config['log']['save_name'] = f"{config['log']['save_name']}_refined"
+
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     # logger info
@@ -85,81 +88,76 @@ def main():
     setup_logger(logdir)
     print(config)
 
-    # network
+    # network 建立网络模型，即骨干网络
     mcd_model_1 = build_mcd_model(config).to(device)
-    mcd_model_2 = build_mcd_model(config).to(device)
-    dg_model = build_dg_model(config).to(device)
+    #mcd_model_2 = build_mcd_model(config).to(device)        #两个APL模块的网络
+    dg_model = build_dg_model(config).to(device)            #DCG过程的网络
 
     # optim
     mcd_opt_1 = build_mcd_optimizer(mcd_model_1, config)
-    mcd_opt_2 = build_mcd_optimizer(mcd_model_2, config)
+    #mcd_opt_2 = build_mcd_optimizer(mcd_model_2, config)
     dg_opt = build_dg_optimizer(dg_model, config)
 
 
     # data_list, transform
     input_size = config['data_transforms']['input_size']
     batch_size = config['trainer']['batch_size']
+
+    #transform设置
     mcd_transform_test = simple_transform_test(input_size=input_size, type = config['data']['type'])
     mcd_transform_train = simple_transform_train(input_size=input_size, type = config['data']['type'])
+
+    #读取数据
     impath_label_x = get_image_dirs(root=config['data']['root'],
-                                    dname=config['data']['source_domain_x'],
-                                    split="train")  #源域1
-    impath_label_u_1 = get_image_dirs(root=config['data']['root'],
-                                      dname=config['data']['source_domain_u_1'],
-                                      split="train")  #源域2
-    impath_label_u_2 = get_image_dirs(root=config['data']['root'],
-                                      dname=config['data']['source_domain_u_2'],
-                                      split="train")  #源域3
+                                         dname=config['data']['source_domain_x'],
+                                         split="train")  #源域1
+    impath_label_u_1 = get_web_image_dirs(root=config['data']['webroot'])  #源域2即web数据
+
     impath_label_t = get_image_dirs(root=config['data']['root'],
-                                    dname=config['data']['target_domain'],
-                                    split="all")
-    fake_mcd_u_1 = []
-    fake_mcd_u_2 = []
+                                         dname=config['data']['target_domain'],
+                                         split="train")
+
     fake_dg_u_1 = []
-    fake_dg_u_2 = []
+
 
     # trainer
     trainer_mcd_1 = MCDTrainer(mcd_model_1, mcd_opt_1, device, 1, **config['trainer'])
-    trainer_mcd_2 = MCDTrainer(mcd_model_2, mcd_opt_2, device, 2, **config['trainer'])
+
 
     for index in range(3):
-        print(f"Round {index}: Training MCD.".center(100, "#"))
-        # dataloader
-        train_data_1 = impath_label_x + fake_dg_u_1
-        train_data_2 = impath_label_x + fake_dg_u_2
-        dataloader_x_1 = build_dataloader(train_data_1, batch_size, config, mcd_transform_train)
-        print('dataset dataloader_x_1: {}'.format(len(dataloader_x_1)))
-        dataloader_x_2 = build_dataloader(train_data_2, batch_size, config, mcd_transform_train)
-        print('dataset dataloader_x_2: {}'.format(len(dataloader_x_2)))
-        dataloader_u_1 = build_dataloader(impath_label_u_1, batch_size, config, mcd_transform_train)
-        print('dataset dataloader_u_1: {}'.format(len(dataloader_u_1)))
-        dataloader_u_2 = build_dataloader(impath_label_u_2, batch_size, config, mcd_transform_train)
-        print('dataset dataloader_u_2: {}'.format(len(dataloader_u_2)))
 
-        # train
-        trainer_mcd_1.update_lr(index + 1)
-        trainer_mcd_2.update_lr(index + 1)
-        trainer_mcd_1.train_mcd(dataloader_x_1, dataloader_u_1, 30)
-        trainer_mcd_2.train_mcd(dataloader_x_2, dataloader_u_2, 30)
-        del dataloader_x_1, dataloader_x_2, dataloader_u_1, dataloader_u_2
+        if index == 0:
+            print(f"Round {index}: Training MCD.".center(100, "#"))
+            fake_mcd_u_1 = impath_label_u_1
 
-        # test dataloader.
-        dataloader_u_1 = build_dataloader(impath_label_u_1, batch_size, config, mcd_transform_test, False)
-        dataloader_u_2 = build_dataloader(impath_label_u_2, batch_size, config, mcd_transform_test, False)
-        # test
-        print("test dataloader_u_1.".center(60, "#"))
-        trainer_mcd_1.test(dataloader_u_1)
-        print("test dataloader_u_2.".center(60, "#"))
-        trainer_mcd_2.test(dataloader_u_2)
-        # get pseudo label.
-        print("get pseudo label.".center(60, "#"))
-        fake_mcd_u_1 = trainer_mcd_1.get_pl(dataloader_u_1)
-        fake_mcd_u_2 = trainer_mcd_2.get_pl(dataloader_u_2)
-        del dataloader_u_1, dataloader_u_2
+        else:
 
-        # Train Co-teaching
+            print(f"Round {index}: Training MCD.".center(100, "#"))
+            # dataloader
+            train_data_1 = impath_label_x + fake_dg_u_1
+            dataloader_x_1 = build_dataloader(train_data_1, batch_size, config, mcd_transform_train)
+            print('dataset dataloader_x_1: {}'.format(len(dataloader_x_1)))
+            dataloader_u_1 = build_dataloader(impath_label_u_1, batch_size, config, mcd_transform_train)
+            print('dataset dataloader_u_1: {}'.format(len(dataloader_u_1)))
+
+            # train
+            trainer_mcd_1.update_lr(index + 1)
+            trainer_mcd_1.train_mcd(dataloader_x_1, dataloader_u_1, 30)
+            del dataloader_x_1, dataloader_u_1
+
+            # test dataloader.
+            dataloader_u_1 = build_dataloader(impath_label_u_1, batch_size, config, mcd_transform_test, False)
+            # test
+            print("test dataloader_u_1.".center(60, "#"))
+            trainer_mcd_1.test(dataloader_u_1)
+            # get pseudo label.
+            print("get pseudo label.".center(60, "#"))  #通过MCD训练得到模型后，经过test得到伪标签
+            fake_mcd_u_1 = trainer_mcd_1.get_pl(dataloader_u_1)
+            del dataloader_u_1
+
+        # Train Co-teach0ing
         print("Training CO-Teaching.".center(100, "#"))
-        train_data = impath_label_x + fake_mcd_u_1 + fake_mcd_u_2
+        train_data = impath_label_x + fake_mcd_u_1  #数据为路径加标签，即文本中的一行
         dg_transform_test = simple_transform_test(input_size=input_size, type = config['data']['type'])
         dg_transform_train = simple_transform_train(input_size=input_size, type = config['data']['type'])
         dataloader_train = build_dataloader(train_data, batch_size, config, dg_transform_train)
@@ -175,14 +173,12 @@ def main():
 
         #test dataloader
         dataloader_u_1 = build_dataloader(impath_label_u_1, batch_size, config, mcd_transform_test, False)
-        dataloader_u_2 = build_dataloader(impath_label_u_2, batch_size, config, mcd_transform_test, False)
 
         #get pseudo label
         ratio = config['ratio']
         print("get dg pseudo label.".center(60, "#"))
         fake_dg_u_1 = trainer_dg.get_pl(dataloader_u_1,ratio = ratio)
-        fake_dg_u_2 = trainer_dg.get_pl(dataloader_u_2,ratio = ratio)
-        del dataloader_u_1, dataloader_u_2
+        del dataloader_u_1
 
 
 

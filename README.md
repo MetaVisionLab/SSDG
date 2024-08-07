@@ -29,7 +29,7 @@ Or using docker image ```pytorch/pytorch:1.7.1-cuda11.0-cudnn8-devel```.
 
 ## Data Preparation
 
-You can download the dataset [PACS](https://csip.fzu.edu.cn/files/datasets/SSDG/pacs.zip), [Digits-DG](https://csip.fzu.edu.cn/files/datasets/SSDG/digits_dg.zip) and [Office-Home-DG](https://csip.fzu.edu.cn/files/datasets/SSDG/office_home_dg.zip) to the folder SSDG/data and unzip it, which include three folders representing three datasets in our paper.
+You can download the dataset [PACS](https://csip.fzu.edu.cn/files/datasets/SSDG/pacs.zip), [Digits-DG](https://csip.fzu.edu.cn/files/datasets/SSDG/digits_dg.zip), [Office-Home-DG](https://csip.fzu.edu.cn/files/datasets/SSDG/office_home_dg.zip), [web_pacs](https://csip.fzu.edu.cn/files/datasets/SSDG/web_pacs.zip) and [web_office](https://csip.fzu.edu.cn/files/datasets/SSDG/web_office.zip) to the folder SSDG/data and unzip it, which include three folders representing three datasets in our paper.
 
 File structure:
 
@@ -44,14 +44,17 @@ SSDG/data
 |--pacs/
   |–– images/
   |–– splits/
+|--web_office/
+|--web_pacs/
 ```
 
 ## Training
 
 ```
-sh pacs.sh       #train pacs
-sh digits.sh     #train digits_dg
-sh officeHome.sh   #train office_home_dg
+bash script/pacs.sh       #train pacs
+bash script/digits.sh     #train digits_dg
+bash script/officeHome.sh   #train office_home_dg
+...
 ```
 
 # Validation

@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 python main.py --task art2realWorld
 
 python main.py --task art2clipart
